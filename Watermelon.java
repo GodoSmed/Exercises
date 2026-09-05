@@ -1,8 +1,6 @@
-package Exercises;
 /*
 4A
 */
-
 import java.util.Scanner;
 
 public class Watermelon {
@@ -12,11 +10,11 @@ public class Watermelon {
         scanner.close();
     }
 
-    static void Even(int i){
-        if (i == 2 || (i%2 != 0 && (i-2)%2 != 0)) { 
-                System.out.println("NO");
-            } else {
-                System.out.println("YES");
-            }   
+    static void Even(int i) {
+        if (i == 2 || (i % 2 != 0 && (i - 2) % 2 != 0)) {
+            System.out.println("NO");
+        } else {
+            System.out.println("YES");
+        }
     }
 }
