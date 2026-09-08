@@ -19,7 +19,7 @@ int escribir(){
 
 int main() {
   int tam, cons;
-  FILE *datos = fopen("./Archivos/Almacén.txt", "w");
+  FILE *datos = fopen("./Files/Almacén.txt", "w");
   if (datos == NULL) {
     printf("Error al abrir el archivo");
     exit(0);
