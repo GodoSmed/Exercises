@@ -31,7 +31,6 @@ public class MatrixMul {
         System.out.print("B Columns: ");
         n = scan.nextInt();
         int[][] B = new int[m][n];
-        System.out.println();
         for (int i = 0; i < m; i++) 
             for (int j = 0; j < n; j++) 
                 B[i][j] = scan.nextInt();
@@ -42,20 +41,15 @@ public class MatrixMul {
             int[][] C = new int[A.length][B[0].length];
             
             for (int k = 0; k < A.length; k++) { 
+                System.err.print("{");
                 for (int i = 0; i < B[0].length; i++) { 
                     for (int j = 0; j < B.length; j++) { 
                         C[k][i] += A[k][j] * B[j][i];
                     }
-                }
-            }
-
-            for (int i = 0; i < C.length; i++) {
-                System.err.print("{");
-                for (int j = 0; j < C[0].length; j++) {
-                    System.out.print(" " + C[i][j] + " ");
+                    System.out.print(" " + C[k][i] + " ");
                 }
                 System.out.print("}\n");
-            }   
+            }
         }
         scan.close();
     }
