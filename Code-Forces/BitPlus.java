@@ -1,3 +1,7 @@
+/*
+282A
+*/
+
 import java.util.Scanner;
 
 public class BitPlus {
