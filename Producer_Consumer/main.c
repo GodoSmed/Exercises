@@ -1,57 +1,61 @@
 /*
-    Productor - Consumidor, sin mecanismos de comunicación o sincronización
-    Solo se pueden usar ciclos vacíos o sleep para sincronizar
+  Productor - Consumidor, 1 a 1 sin mecanismos de comunicación o
+  sincronización Solo se pueden usar ciclos vacíos o sleep para sincronizar y
+  archivos para comunicación
 */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 
-int leer() { 
-  
+int productor(int tam) {
+
+  // Retorna -1 si el stack esta lleno
   return 0;
 }
 
-int escribir(){
-  
+int op() {
+
+  // Operaciones entre productor y consumidor
+  return 0;
+}
+
+int consumidor() {
+
+  // Retorna -1 si el stack esta vacío
   return 0;
 }
 
 int main() {
-  int tam, cons;
-  FILE *datos = fopen("./Files/Almacén.txt", "w");
-  if (datos == NULL) {
-    printf("Error al abrir el archivo");
+  int tam, prod;
+  FILE *com = fopen("Producer_Consumer/Files/com.txt", "w");
+
+  if (com == NULL) {
+    printf("Error al abrir los archivos\n");
     exit(0);
   }
-  fclose(datos);
+  fclose(com);
 
   printf("Escriba el tamaño del almacén: \n");
   scanf("%d", &tam);
 
-  printf("Escriba el número de consumidores: \n");
-  scanf("%d", &cons);
+  printf("Escriba el número de productos: \n");
+  scanf("%d", &prod);
 
-  for (int i = 0; i < cons; i++) {
-    int pid = fork();
-
-    if (pid < 0) {
-      printf("Error al crear proceso\n");
-      exit(0);
-    }
-
-    if (pid > 0) { // Productor
-      //while (escribir() == 0)
-        sleep(1);
-    }
-
-    if (pid == 0) { // Consumidores
-      //while (leer() == 0)
-        sleep(1);
-
-      exit(0);
-    }
+  int pid = fork();
+  if (pid < 0) {
+    printf("Error al crear proceso\n");
+    exit(0);
   }
 
+  for (int i = 0; i < prod; i++) {
+    if (pid > 0) {
+      while (productor(tam) == -1)
+        sleep(1);
+    } else {
+      while (consumidor() == -1)
+        sleep(1);
+    }
+  }
   return 0;
 }
