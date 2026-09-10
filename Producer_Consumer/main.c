@@ -8,41 +8,42 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-int get_linea(int op) {
+int get_linea(int op, int seek) {
+  int num = -1, cont = 0;
+  char buff[16];
+
   if (op == 0) {
     FILE *comp = fopen("Producer_Consumer/Files/compra.txt", "r");
-    char buff[2];
-    int num;
-
-    if (fseek(comp, -2, SEEK_END) != 0){
-      fclose(comp);
-      return -1;
+    
+    while (fgets(buff, sizeof(buff), comp) != NULL) {
+      if (cont == seek) {
+        num = fgetc(comp) - '0';
+        seek = cont;
+      }
+      cont++;
     }
-
-    num = fgetc(comp) - '0';
 
     fclose(comp);
     return num;
   } else {
     FILE *vent = fopen("Producer_Consumer/Files/venta.txt", "r");
-    char buff[2];
-    int num;
 
-    if (fseek(vent, -2, SEEK_END) != 0){
-      fclose(vent);
-      return -1;
+    while (fgets(buff, sizeof(buff), vent) != NULL) {
+      if (cont == seek) {
+        num = fgetc(vent) - '0';
+        seek = cont;
+      }
+      cont++;
     }
-
-    num = fgetc(vent) - '0';
 
     fclose(vent);
     return num;
   }
 }
 
-int producir(int productos[], int *ap, int *ventas, int tam) {
+int producir(int productos[], int *ap, int *ventas, int *seek, int tam) {
   FILE *vent = fopen("Producer_Consumer/Files/venta.txt", "a");
-  int num = get_linea(0);
+  int num = get_linea(0, *seek);
 
   if (num == 0) {
     (*ventas)++;
@@ -67,9 +68,9 @@ int producir(int productos[], int *ap, int *ventas, int tam) {
   return 0;
 }
 
-int comprar(int *compras) {
+int comprar(int *compras, int *seek) {
   FILE *comp = fopen("Producer_Consumer/Files/compra.txt", "a");
-  int num = get_linea(1);
+  int num = get_linea(1, *seek);
 
   if (num == 1) {
     (*compras)++;
@@ -105,9 +106,9 @@ int main() {
 
   if (pid > 0) { // Productor
 
-    int productos[tam], ap = 0, ventas = 0;
+    int productos[tam], ap = 0, ventas = 0, seek = 0;
     while (ventas != prod) {
-      while (producir(productos, &ap, &ventas, tam) == 1) {
+      while (producir(productos, &ap, &ventas, &seek, tam) == 1) {
         sleep(1);
       }
     }
@@ -115,9 +116,9 @@ int main() {
 
   } else { // Consumidor
 
-    int compras = 0;
+    int compras = 0, seek = 0;
     while (compras != prod) {
-      while (comprar(&compras) == 1) {
+      while (comprar(&compras, &seek) == 1) {
         sleep(1);
       }
     }
