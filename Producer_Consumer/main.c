@@ -8,19 +8,16 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-int get_linea(int op, int *seek) {
-  int num = -1, cont = 0;
+int get_info(int op, int *seek) {
+  int num = -1;
   char buff[16];
 
   if (op == 0) {
     FILE *comp = fopen("Producer_Consumer/Files/compra.txt", "r");
     
-    while (fgets(buff, sizeof(buff), comp) != NULL) {
-      if (cont == *seek) {
+    fseek(comp, (*seek) * 2, SEEK_SET);
+    if (fgets(buff, sizeof(buff), comp) != NULL) {
         num = buff[0] - '0';
-        *seek = cont;
-      }
-      cont++;
     }
 
     fclose(comp);
@@ -28,12 +25,9 @@ int get_linea(int op, int *seek) {
   } else {
     FILE *vent = fopen("Producer_Consumer/Files/venta.txt", "r");
 
-    while (fgets(buff, sizeof(buff), vent) != NULL) {
-      if (cont == *seek) {
+    fseek(vent, (*seek) * 2, SEEK_SET);
+    if (fgets(buff, sizeof(buff), vent) != NULL) {
         num = buff[0] - '0';
-        *seek = cont;
-      }
-      cont++;
     }
 
     fclose(vent);
@@ -41,9 +35,9 @@ int get_linea(int op, int *seek) {
   }
 }
 
-int producir(int productos[], int *ap, int *ventas, int *seek, int tam) {
+int producir(int productos[], int *ap, int *ventas, int *seek, int tam) { 
+  int num = get_info(0, seek);
   FILE *vent = fopen("Producer_Consumer/Files/venta.txt", "a");
-  int num = get_linea(0, seek);
 
   if (num == 0) {
     (*ventas)++;
@@ -70,8 +64,8 @@ int producir(int productos[], int *ap, int *ventas, int *seek, int tam) {
 }
 
 int comprar(int *compras, int *seek) {
+  int num = get_info(1, seek);
   FILE *comp = fopen("Producer_Consumer/Files/compra.txt", "a");
-  int num = get_linea(1, seek);
 
   if (num == 1) {
     (*compras)++;
