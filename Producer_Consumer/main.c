@@ -86,7 +86,7 @@ int comprar(int *compras) {
 int main() {
   FILE *comp = fopen("Producer_Consumer/Files/compra.txt", "w"),
        *vent = fopen("Producer_Consumer/Files/venta.txt", "w");
-  int N, tam;
+  int prod, tam;
 
   if (comp == NULL || vent == NULL) {
     printf("Error al abrir archivo\n");
@@ -98,15 +98,15 @@ int main() {
   printf("Escriba el tamaño del almacén: \n");
   scanf("%d", &tam);
 
-  printf("Escriba el número de iteraciones: \n");
-  scanf("%d", &N);
+  printf("Escriba el número de productos: \n");
+  scanf("%d", &prod);
 
   int pid = fork();
 
   if (pid > 0) { // Productor
 
     int productos[tam], ap = 0, ventas = 0;
-    while (ventas != N) {
+    while (ventas != prod) {
       while (producir(productos, &ap, &ventas, tam) == 1) {
         sleep(1);
       }
@@ -116,7 +116,7 @@ int main() {
   } else { // Consumidor
 
     int compras = 0;
-    while (compras != N) {
+    while (compras != prod) {
       while (comprar(&compras) == 1) {
         sleep(1);
       }
