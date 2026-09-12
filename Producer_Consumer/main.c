@@ -105,7 +105,7 @@ int main() {
       }
 
       while (get_estado() == 2) {
-        sleep(usleep(1 * 1000));
+        usleep(1 * 1000);
       }
 
       buffer[ap++] = prod;
