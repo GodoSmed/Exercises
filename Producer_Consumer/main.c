@@ -121,7 +121,7 @@ int main() {
 
   } else { // Consumidor
 
-    int compras = 0, ap = 0, buffer[i];
+    int compras = 0, ap = 0, *buffer = malloc(i * sizeof(int));
     while (compras != i) {
       while (get_estado() == 0) {
         sleep(1);
@@ -140,6 +140,7 @@ int main() {
         set_estado(0);
       }
     }
+    free(buffer);
   }
   return 0;
 }
