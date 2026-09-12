@@ -2,21 +2,21 @@
   Productor - Consumidor, 1 a 1 sin mecanismos de comunicación o
   sincronización Solo se pueden usar ciclos vacíos o sleep para sincronizar y
   archivos solo para comunicación (no almacenamiento), cada proceso tiene su
-  buffer propio
+  buffer prdatio
 */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 
-void set_estado(int op) {
+void set_estado(int dat) {
   FILE *est = fopen("Producer_Consumer/Files/estado.txt", "r+");
   rewind(est);
-  if (op == 0) {
+  if (dat == 0) {
     fprintf(est, "0"); // 0 estado
-  } else if (op == 1) {
+  } else if (dat == 1) {
     fprintf(est, "1"); // 1 estado
-  } else if (op == 2) {
+  } else if (dat == 2) {
     fprintf(est, "2"); // 2 estado
   } else {
     fprintf(est, "3"); // 3 estado
@@ -25,7 +25,7 @@ void set_estado(int op) {
 }
 
 void set_producto(int producto) {
-  FILE *vent = fopen("Producer_Consumer/Files/operaciones.txt", "r+");
+  FILE *vent = fopen("Producer_Consumer/Files/datos.txt", "r+");
   char temp[64];
 
   fprintf(vent, "%d\n", producto);
@@ -56,7 +56,7 @@ int get_estado() {
 }
 
 int get_producto() {
-  FILE *vent = fopen("Producer_Consumer/Files/operaciones.txt", "r");
+  FILE *vent = fopen("Producer_Consumer/Files/datos.txt", "r");
   char temp[64];
   int num;
 
@@ -70,18 +70,18 @@ int get_producto() {
 }
 
 int main() {
-  FILE *op = fopen("Producer_Consumer/Files/operaciones.txt", "w"),
+  FILE *dat = fopen("Producer_Consumer/Files/datos.txt", "w"),
        *est = fopen("Producer_Consumer/Files/estado.txt", "w");
   int i, tam;
 
-  if (op == NULL || est == NULL) {
+  if (dat == NULL || est == NULL) {
     printf("Error al abrir archivo\n");
     exit(0);
   }
 
-  fprintf(op, "0");
+  fprintf(dat, "0");
   fprintf(est, "0");
-  fclose(op);
+  fclose(dat);
   fclose(est);
 
   printf("Escriba el tamaño del almacén: \n");

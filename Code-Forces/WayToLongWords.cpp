@@ -1,7 +1,13 @@
 /*
 71A
 */
-import java.util.Scanner;
+
+class WayToLongWords{
+	int main(){
+
+		return 0;
+	}
+}
 
 public class WayToLongWords {
     public static void main(String[] args) {

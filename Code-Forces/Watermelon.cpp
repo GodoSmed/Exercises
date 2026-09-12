@@ -1,7 +1,13 @@
 /*
 4A
 */
-import java.util.Scanner;
+
+class Watermelon{
+	int main(){
+
+		return 0;
+	}
+}
 
 public class Watermelon {
     public static void main(String[] args) {
