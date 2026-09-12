@@ -27,9 +27,7 @@ void set_estado(int dat) {
 void set_producto(int producto) {
   FILE *vent = fopen("Producer_Consumer/Files/datos.txt", "r+");
   char temp[64];
-
   fprintf(vent, "%d\n", producto);
-
   fclose(vent);
 }
 
