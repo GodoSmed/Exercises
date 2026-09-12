@@ -1,124 +1,145 @@
 /*
   Productor - Consumidor, 1 a 1 sin mecanismos de comunicación o
   sincronización Solo se pueden usar ciclos vacíos o sleep para sincronizar y
-  archivos solo para comunicación (no almacenamiento)
+  archivos solo para comunicación (no almacenamiento), cada proceso tiene su
+  buffer propio
 */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 
-int get_info(int op, int *seek) {
-  int num = -1;
-  char buff[16];
-
+void set_estado(int op) {
+  FILE *est = fopen("Producer_Consumer/Files/estado.txt", "r+");
+  rewind(est);
   if (op == 0) {
-    FILE *comp = fopen("Producer_Consumer/Files/compra.txt", "r");
-    
-    fseek(comp, (*seek) * 2, SEEK_SET);
-    if (fgets(buff, sizeof(buff), comp) != NULL) {
-        num = buff[0] - '0';
-    }
-
-    fclose(comp);
-    return num;
+    fprintf(est, "0"); // 0 estado
+  } else if (op == 1) {
+    fprintf(est, "1"); // 1 estado
+  } else if (op == 2) {
+    fprintf(est, "2"); // 2 estado
   } else {
-    FILE *vent = fopen("Producer_Consumer/Files/venta.txt", "r");
-
-    fseek(vent, (*seek) * 2, SEEK_SET);
-    if (fgets(buff, sizeof(buff), vent) != NULL) {
-        num = buff[0] - '0';
-    }
-
-    fclose(vent);
-    return num;
+    fprintf(est, "3"); // 3 estado
   }
+  fclose(est);
 }
 
-int producir(int productos[], int *ap, int *ventas, int *seek, int tam) { 
-  int num = get_info(0, seek);
-  FILE *vent = fopen("Producer_Consumer/Files/venta.txt", "a");
+void set_producto(int producto) {
+  FILE *vent = fopen("Producer_Consumer/Files/operaciones.txt", "r+");
+  char temp[64];
 
-  if (num == 0) {
-    (*ventas)++;
-    productos[*ap] = 0;
-
-    if (*ap != 0) {
-      (*ap)--;
-    }
-    (*seek)++;
-  }
-
-  productos[*ap] = 1;
-
-  if (*ap == tam) {
-    fclose(vent);
-    return 1;
-  } 
-
-  fprintf(vent, "%d\n", productos[*ap]);
-  (*ap)++; 
+  fprintf(vent, "%d\n", producto);
 
   fclose(vent);
-  return 0;
 }
 
-int comprar(int *compras, int *seek) {
-  int num = get_info(1, seek);
-  FILE *comp = fopen("Producer_Consumer/Files/compra.txt", "a");
+int get_estado() {
+  FILE *est = fopen("Producer_Consumer/Files/estado.txt", "r");
+  int num;
+  if (fscanf(est, "%d", &num) == 1) {
+    if (num == 0) {
+      fclose(est);
+      return 0;
+    } else if (num == 1) {
+      fclose(est);
+      return 1;
+    } else if (num == 2) {
+      fclose(est);
+      return 2;
+    } else if (num == 3) {
+      fclose(est);
+      return 3;
+    }
+  }
+  fclose(est);
+  return -1;
+}
 
-  if (num == 1) {
-    (*compras)++;
-    fprintf(comp, "%d\n", 0);
-    (*seek)++;
-  } else {
-    fclose(comp);
-    return 1;
+int get_producto() {
+  FILE *vent = fopen("Producer_Consumer/Files/operaciones.txt", "r");
+  char temp[64];
+  int num;
+
+  if (fscanf(vent, "%d", &num) == 1) {
+    fclose(vent);
+    return num;
   }
 
-  fclose(comp);
-  return 0;
+  fclose(vent);
+  return -1;
 }
 
 int main() {
-  FILE *comp = fopen("Producer_Consumer/Files/compra.txt", "w"),
-       *vent = fopen("Producer_Consumer/Files/venta.txt", "w");
-  int prod, tam;
+  FILE *op = fopen("Producer_Consumer/Files/operaciones.txt", "w"),
+       *est = fopen("Producer_Consumer/Files/estado.txt", "w");
+  int i, tam;
 
-  if (comp == NULL || vent == NULL) {
+  if (op == NULL || est == NULL) {
     printf("Error al abrir archivo\n");
     exit(0);
   }
 
-  fclose(comp);
+  fprintf(op, "0");
+  fprintf(est, "0");
+  fclose(op);
+  fclose(est);
 
   printf("Escriba el tamaño del almacén: \n");
   scanf("%d", &tam);
 
-  printf("Escriba el número de productos: \n");
-  scanf("%d", &prod);
+  printf("Escriba el número de iteraciones: \n");
+  scanf("%d", &i);
 
   int pid = fork();
 
+  if (pid < 0) {
+    printf("Error al crear proceso\n");
+  }
+
   if (pid > 0) { // Productor
 
-    int productos[tam], ap = 0, ventas = 0, seek = 0;
-    while (ventas != prod) {
-      while (producir(productos, &ap, &ventas, &seek, tam) == 1) {
+    int ap = 0, prod = 0, buffer[tam];
+    while (prod != i) {
+      while (get_estado() == 1) {
         sleep(1);
       }
+
+      while (get_estado() == 2) {
+        sleep(usleep(1 * 1000));
+      }
+
+      buffer[ap++] = prod;
+      set_producto(prod++);
+      set_estado(2);
+
+      if (prod % tam == 0) {
+        ap = 0;
+        printf("El productor produjo: %d productos\n", prod);
+        set_estado(1);
+      }
     }
-    printf("Ventas efectuadas: %d\n", ventas);
 
   } else { // Consumidor
 
-    int compras = 0, seek = 0;
-    while (compras != prod) {
-      while (comprar(&compras, &seek) == 1) {
+    int compras = 0, ap = 0, buffer[i];
+    while (compras != i) {
+      while (get_estado() == 0) {
         sleep(1);
       }
+
+      while (get_estado() == 3) {
+        usleep(1 * 1000);
+      }
+
+      buffer[ap++] = get_producto();
+      compras++;
+      set_estado(3);
+
+      if (compras % tam == 0) {
+        printf("El consumidor compro: %d productos\n", compras);
+        set_estado(0);
+      }
     }
-    printf("Compras efectuadas: %d\n", compras);
   }
   return 0;
 }
