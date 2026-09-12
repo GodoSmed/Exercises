@@ -1,8 +1,8 @@
 /*
   Productor - Consumidor, 1 a 1 sin mecanismos de comunicación o
   sincronización Solo se pueden usar ciclos vacíos o sleep para sincronizar y
-  archivos solo para comunicación (no almacenamiento), cada proceso tiene su
-  buffer prdatio
+  archivos solo para comunicación, cada proceso tiene su
+  buffer
 */
 
 #include <stdio.h>
