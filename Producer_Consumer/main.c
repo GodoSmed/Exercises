@@ -110,12 +110,13 @@ int main() {
 
       buffer[ap++] = prod;
       set_producto(prod++);
-      set_estado(2);
 
       if (prod % tam == 0) {
         ap = 0;
         printf("El productor produjo: %d productos\n", prod);
         set_estado(1);
+      } else {
+        set_estado(2);
       }
     }
 
@@ -133,11 +134,12 @@ int main() {
 
       buffer[ap++] = get_producto();
       compras++;
-      set_estado(3);
 
       if (compras % tam == 0) {
         printf("El consumidor compro: %d productos\n", compras);
         set_estado(0);
+      } else {
+        set_estado(3);
       }
     }
     free(buffer);
