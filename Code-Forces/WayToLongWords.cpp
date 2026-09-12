@@ -2,39 +2,41 @@
 71A
 */
 
+#include <cstring>
+#include <iostream>
+#include <ostream>
+#include <string>
+
 class WayToLongWords{
-	int main(){
+    public:
+        std::string ToLong(const std::string& word){
+            std::string newWord;
 
-		return 0;
-	}
-}
+            newWord += word[0];
+            newWord += std::to_string(word.length() - 2);
+            newWord += word[word.length() - 1];
 
-public class WayToLongWords {
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        int num = scanner.nextInt();
-        scanner.nextLine();
-        for (int i = 0; i < num; i++) {
-            String word = scanner.nextLine();
-            if (word.length() <= 10) {
-                System.out.println(word);
-            } else
-                System.out.println(ToLong(word));
+            return newWord;
         }
-        scanner.close();
+};
+
+int main(){
+    WayToLongWords obj;
+    int num;
+    std::cin >> num;
+    for (int i = 0; i < num; i++) {
+        std::string word;
+        std::cin >> word;
+        if (word.length() <= 10) {
+            std::cout << word << std::endl;
+        } else {
+            std::string toLong;
+            toLong = obj.ToLong(word);
+            std::cout << toLong <<std::endl;
+        }
     }
 
-    static String ToLong(String word) {
-        char[] num = String.valueOf(word.length() - 2).toCharArray();
-        char[] cWord = word.toCharArray();
-        char[] shtWord = new char[2 + num.length];
-
-        shtWord[0] = cWord[0];
-        shtWord[shtWord.length - 1] = cWord[cWord.length - 1];
-        for (int i = 1; i < num.length + 1; i++)
-            shtWord[i] = num[i - 1];
-
-        word = new String(shtWord);
-        return word;
-    }
+    return 0;
 }
+
+

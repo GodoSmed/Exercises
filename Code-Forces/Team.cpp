@@ -2,26 +2,21 @@
 231A
 */
 
-class Team{
-	int main(){
+#include <iostream>
+int main(){
+	int n, P, V, T, total = 0;
+	std::cin >> n;
+	for (int i = 0; i < n; i++) {
+		std::cin >> P;
+		std::cin >> V;
+		std::cin >> T;
 
-		return 0;
-	}
-}
-
-public class Team {
-	public static void main(String[] args) {
-		Scanner scanner = new Scanner(System.in);
-		int n = scanner.nextInt();
-		int total = 0;
-		for (int i = 0; i < n; i++) {
-			int P = scanner.nextInt();
-			int V = scanner.nextInt();
-			int T = scanner.nextInt();
-			if ((P + V + T) > 1)
-				total++;
+		if ((P + V + T) > 1) {
+			total++;
 		}
-		System.out.println(total);
-		scanner.close();
 	}
+	std::cout << total <<std::endl;
+
+	return 0;
 }
+

@@ -1,5 +1,5 @@
-/* 
- [0][0] = A[0][0] * B[0][0] +  
+/*
+ [0][0] = A[0][0] * B[0][0] +
           A[0][1] * B[1][0] +
           A[0][2] * B[2][0]
  [0][1] = A[0][0] * B[0][1] +
@@ -13,45 +13,61 @@
           A[1][2] * B[2][1]
 */
 
-class MatrixMul {
-    int main() {
-        int m, n;
-        
-        return 0;
+#include <iostream>
+
+int main() {
+  int m, n;
+  std::cout << "A Rows: " << std::endl;
+  std::cin >> m;
+
+  std::cout << "A Columns: " << std::endl;
+  std::cin >> n;
+
+  int A[m][n], am = m, an = n;
+  
+  std::cout << "A Values: " << std::endl;
+  for (int i = 0; i < m; i++) {
+    for (int j = 0; j < n; j++) {
+      std::cin >> A[i][j];
     }
-};
+  }
 
-System.out.print("A Rows: ");
-m = scan.nextInt();
-System.out.print("A Columns: ");
-n = scan.nextInt();
-int[][] A = new int[m][n];
-for (int i = 0; i < m; i++) 
-    for (int j = 0; j < n; j++) 
-        A[i][j] = scan.nextInt();
+  std::cout << "B Rows: " << std::endl;
+  std::cin >> m;
 
-System.out.print("B Rows: ");
-m = scan.nextInt();
-System.out.print("B Columns: ");
-n = scan.nextInt();
-int[][] B = new int[m][n];
-for (int i = 0; i < m; i++) 
-    for (int j = 0; j < n; j++) 
-        B[i][j] = scan.nextInt();
-    
-if (A[0].length != B.length) {
-    System.out.println("Imposible");
-} else {
-    int[][] C = new int[A.length][B[0].length];
-    
-    for (int k = 0; k < A.length; k++) { 
-        System.err.print("{");
-        for (int i = 0; i < B[0].length; i++) { 
-            for (int j = 0; j < B.length; j++) { 
-                C[k][i] += A[k][j] * B[j][i];
-            }
-            System.out.print(" " + C[k][i] + " ");
+  std::cout << "B Columns: " << std::endl;
+  std::cin >> n;
+
+  std::cout << "B Values: " << std::endl;
+  int B[m][n], bm = m, bn = n;
+  for (int i = 0; i < m; i++) {
+    for (int j = 0; j < n; j++) {
+      std::cin >> B[i][j];
+    }
+  }
+
+  if (an != bm) {
+    std::cout << "Imposible" << std::endl;
+  } else {
+    int C[am][bn];
+
+    for (int i = 0; i < am; i++) {
+      for (int j = 0; j < bn; j++) {
+        C[i][j] = 0;
+      }
+    }
+
+    for (int k = 0; k < am; k++) {
+      std::cout << "{" << std::flush;
+      for (int i = 0; i < bn; i++) {
+        for (int j = 0; j < bm; j++) {
+          C[k][i] += A[k][j] * B[j][i];
         }
-        System.out.print("}\n");
+        std::cout << " " << C[k][i] << " " << std::flush;
+      }
+      std::cout << "}" << std::endl;
     }
+  }
+
+  return 0;
 }

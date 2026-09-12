@@ -2,25 +2,25 @@
 4A
 */
 
+#include <iostream>
+#include <ostream>
+
 class Watermelon{
-	int main(){
 
-		return 0;
-	}
-}
-
-public class Watermelon {
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        Even(scanner.nextInt());
-        scanner.close();
-    }
-
-    static void Even(int i) {
+public:
+    void Even(int i){
         if (i == 2 || (i % 2 != 0 && (i - 2) % 2 != 0)) {
-            System.out.println("NO");
+            std::cout << "NO\n" << std::endl;
         } else {
-            System.out.println("YES");
+            std::cout << "YES\n" << std::endl;
         }
     }
+};
+
+int main(){
+    Watermelon obj;
+    int i;
+    std::cin >> i;
+    obj.Even(i);
+    return 0;
 }
