@@ -12,9 +12,9 @@
 void set_estado(int op) {
   FILE *est = fopen("Producer_Consumer/Files/estado.txt", "w");
   if (op == 0) {
-    fprintf(est, "0"); // 0 vacío
+    fprintf(est, "0"); // 0 sincronización (C)
   } else if (op == 1) {
-    fprintf(est, "1"); // 1 lleno
+    fprintf(est, "1"); // 1 Vacío
   } else if (op == 2) {
     fprintf(est, "2"); // 2 sincronización (P)
   } 
@@ -70,7 +70,7 @@ int vaciar_buffer(int buffer[], int *ap, int tam) {
 
   set_producto(buffer[(*ap)++]);
 
-  if (*ap == tam) {
+  if (*ap == tam) { //Buffer vacío
     *ap = 0;
     set_estado(1);
     return 1;
