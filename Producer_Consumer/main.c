@@ -133,7 +133,6 @@ int main() {
       if (compras % tam == 0) { 
         printf("El consumidor compro: %d productos\n", compras);
         fflush(stdout);
-        sleep(1); // Lleno
       } 
 
       set_estado(0);
