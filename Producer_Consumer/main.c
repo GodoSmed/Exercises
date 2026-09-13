@@ -109,7 +109,7 @@ int main() {
       if (ap == tam) {
         ap = 0;
         while (vaciar_buffer(buffer, &ap, tam) == 0);
-        sleep(1); // Lleno
+        sleep(1); // Vacío
         printf("El productor produjo: %d productos\n", prod);
         fflush(stdout);
         set_estado(1);
@@ -133,7 +133,7 @@ int main() {
       if (compras % tam == 0) { 
         printf("El consumidor compro: %d productos\n", compras);
         fflush(stdout);
-        sleep(1); // Vacío
+        sleep(1); // Lleno
       } 
 
       set_estado(0);
