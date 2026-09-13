@@ -131,6 +131,7 @@ int main() {
       compras++;
 
       if (compras % tam == 0) { 
+        usleep(200 * 1000);
         printf("El consumidor compro: %d productos\n", compras);
         fflush(stdout);
       } 
