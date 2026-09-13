@@ -14,7 +14,7 @@ void set_estado(int op) {
   if (op == 0) {
     fprintf(est, "0"); // 0 sincronización (C)
   } else {
-    fprintf(est, "1"); // 1 Vacío
+    fprintf(est, "1"); // 1 sincronización (P)
   } 
   fclose(est);
 }
@@ -55,7 +55,7 @@ int get_producto() {
 }
 
 int vaciar_buffer(int buffer[], int *ap, int tam) {
-  while (get_estado() == -1 || get_estado() == 1) {
+  while (get_estado() == -1 || get_estado() == 1) { // Sincronización
     usleep(1 * 1000);
   }
 
@@ -123,7 +123,7 @@ int main() {
     int compras = 0, ap = 0, *buffer = malloc(i * sizeof(int));
     while (compras < i) {
 
-      while (get_estado() == -1 || get_estado() == 0) {
+      while (get_estado() == -1 || get_estado() == 0) { // Sincronización
         usleep(1 * 1000);
       }
 
