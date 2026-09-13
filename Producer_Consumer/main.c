@@ -13,10 +13,8 @@ void set_estado(int op) {
   FILE *est = fopen("Producer_Consumer/Files/estado.txt", "w");
   if (op == 0) {
     fprintf(est, "0"); // 0 sincronización (C)
-  } else if (op == 1) {
+  } else {
     fprintf(est, "1"); // 1 Vacío
-  } else if (op == 2) {
-    fprintf(est, "2"); // 2 sincronización (P)
   } 
   fclose(est);
 }
@@ -37,10 +35,7 @@ int get_estado() {
     } else if (num == 1) {
       fclose(est);
       return 1;
-    } else if (num == 2) {
-      fclose(est);
-      return 2;
-    }
+    } 
   }
   fclose(est);
   return -1;
@@ -60,11 +55,7 @@ int get_producto() {
 }
 
 int vaciar_buffer(int buffer[], int *ap, int tam) {
-  while (get_estado() == 1) {
-    sleep(1);
-  }
-
-  while (get_estado() == 2) {
+  while (get_estado() == -1 || get_estado() == 1) {
     usleep(1 * 1000);
   }
 
@@ -72,10 +63,9 @@ int vaciar_buffer(int buffer[], int *ap, int tam) {
 
   if (*ap == tam) { //Buffer vacío
     *ap = 0;
-    set_estado(1);
     return 1;
   } else {
-    set_estado(2);
+    set_estado(1);
     return 0;
   }
 }
@@ -119,7 +109,10 @@ int main() {
       if (ap == tam) {
         ap = 0;
         while (vaciar_buffer(buffer, &ap, tam) == 0);
+        sleep(1); // Lleno
         printf("El productor produjo: %d productos\n", prod);
+        fflush(stdout);
+        set_estado(1);
       }
 
       buffer[ap++] = prod++;
@@ -130,19 +123,20 @@ int main() {
     int compras = 0, ap = 0, *buffer = malloc(i * sizeof(int));
     while (compras < i) {
 
-      while (get_estado() == 0) {
+      while (get_estado() == -1 || get_estado() == 0) {
         usleep(1 * 1000);
       }
 
       buffer[ap++] = get_producto();
       compras++;
 
-      if (compras % tam == 0) {
-        set_estado(0);
+      if (compras % tam == 0) { 
         printf("El consumidor compro: %d productos\n", compras);
-      } else {
-        set_estado(0);
-      }
+        fflush(stdout);
+        sleep(1); // Vacío
+      } 
+
+      set_estado(0);
     }
     free(buffer);
   }
