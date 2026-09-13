@@ -12,14 +12,12 @@
 void set_estado(int op) {
   FILE *est = fopen("Producer_Consumer/Files/estado.txt", "w");
   if (op == 0) {
-    fprintf(est, "0"); // 0 lleno
+    fprintf(est, "0"); // 0 vacío
   } else if (op == 1) {
-    fprintf(est, "1"); // 1 vacío
+    fprintf(est, "1"); // 1 lleno
   } else if (op == 2) {
     fprintf(est, "2"); // 2 sincronización (P)
-  } else {
-    fprintf(est, "3"); // 3 sincronización (C)
-  }
+  } 
   fclose(est);
 }
 
@@ -42,9 +40,6 @@ int get_estado() {
     } else if (num == 2) {
       fclose(est);
       return 2;
-    } else if (num == 3) {
-      fclose(est);
-      return 3;
     }
   }
   fclose(est);
@@ -136,10 +131,6 @@ int main() {
     while (compras < i) {
 
       while (get_estado() == 0) {
-        sleep(1);
-      }
-
-      while (get_estado() == 3) {
         usleep(1 * 1000);
       }
 
@@ -147,10 +138,10 @@ int main() {
       compras++;
 
       if (compras % tam == 0) {
-        printf("El consumidor compro: %d productos\n", compras);
         set_estado(0);
+        printf("El consumidor compro: %d productos\n", compras);
       } else {
-        set_estado(3);
+        set_estado(0);
       }
     }
     free(buffer);
