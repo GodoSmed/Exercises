@@ -63,6 +63,7 @@ int vaciar_buffer(int buffer[], int *ap, int tam) {
 
   if (*ap == tam) { 
     *ap = 0;
+    set_estado(1);
     return 1;
   } else {
     set_estado(1);
@@ -103,9 +104,8 @@ int main() {
         ap = 0;
         sleep(1); 
         printf("El productor produjo: %d productos\n", prod);
-        while (vaciar_buffer(buffer, &ap, tam) == 0);
         fflush(stdout);
-        set_estado(1);
+        while (vaciar_buffer(buffer, &ap, tam) == 0);
       }
 
       buffer[ap++] = prod++;
