@@ -61,8 +61,9 @@ int vaciar_buffer(int buffer[], int *ap, int tam) {
 
   set_producto(buffer[(*ap)++]);
 
-  if (*ap == tam) { //Buffer vacío
+  if (*ap == tam) { 
     *ap = 0;
+    sleep(1); // Buffer vacío
     return 1;
   } else {
     set_estado(1);
@@ -101,7 +102,7 @@ int main() {
 
       if (ap == tam) {
         ap = 0;
-        sleep(1); 
+        sleep(1); // Buffer LLeno
         printf("El productor produjo: %d productos\n", prod);
         while (vaciar_buffer(buffer, &ap, tam) == 0);
         fflush(stdout);
@@ -124,7 +125,7 @@ int main() {
       compras++;
 
       if (compras % tam == 0) {
-        int *temp = realloc(buffer, compras + tam);
+        int *temp = realloc(buffer, (compras + tam) * sizeof(int));
         buffer = temp; 
         printf("El consumidor compro: %d productos\n", compras);
         fflush(stdout);
@@ -132,7 +133,6 @@ int main() {
 
       set_estado(0);
     }
-    free(buffer);
   }
   return 0;
 }
