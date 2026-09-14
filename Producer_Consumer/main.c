@@ -73,7 +73,7 @@ int vaciar_buffer(int buffer[], int *ap, int tam) {
 int main() {
   FILE *dat = fopen("Producer_Consumer/Files/datos.txt", "w"),
        *est = fopen("Producer_Consumer/Files/estado.txt", "w");
-  int i, tam;
+  int tam;
 
   if (dat == NULL || est == NULL) {
     printf("Error al abrir archivo\n");
@@ -88,13 +88,6 @@ int main() {
   printf("Escriba el tamaño del almacén: \n");
   scanf("%d", &tam);
 
-  printf("Escriba el número de iteraciones: \n");
-  scanf("%d", &i);
-
-  if (i % tam != 0) {
-    i = (i / tam) * tam;
-  }
-
   int pid = fork();
 
   if (pid < 0) {
@@ -104,13 +97,13 @@ int main() {
   if (pid > 0) { // Productor
 
     int ap = 0, prod = 0, buffer[tam];
-    while (prod <= i) {
+    while (1) {
 
       if (ap == tam) {
         ap = 0;
-        while (vaciar_buffer(buffer, &ap, tam) == 0);
-        sleep(1); // Vacío
+        sleep(1); 
         printf("El productor produjo: %d productos\n", prod);
+        while (vaciar_buffer(buffer, &ap, tam) == 0);
         fflush(stdout);
         set_estado(1);
       }
@@ -120,8 +113,8 @@ int main() {
 
   } else { // Consumidor
 
-    int compras = 0, ap = 0, *buffer = malloc(i * sizeof(int));
-    while (compras < i) {
+    int compras = 0, ap = 0, *buffer = malloc(tam * sizeof(int));
+    while (1) {
 
       while (get_estado() == -1 || get_estado() == 0) { // Sincronización
         usleep(1 * 1000);
@@ -130,7 +123,9 @@ int main() {
       buffer[ap++] = get_producto();
       compras++;
 
-      if (compras % tam == 0) { 
+      if (compras % tam == 0) {
+        int *temp = realloc(buffer, compras + tam);
+        buffer = temp; 
         usleep(200 * 1000);
         printf("El consumidor compro: %d productos\n", compras);
         fflush(stdout);
