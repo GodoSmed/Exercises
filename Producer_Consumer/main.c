@@ -126,7 +126,6 @@ int main() {
       if (compras % tam == 0) {
         int *temp = realloc(buffer, compras + tam);
         buffer = temp; 
-        usleep(200 * 1000);
         printf("El consumidor compro: %d productos\n", compras);
         fflush(stdout);
       } 
