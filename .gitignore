@@ -6,3 +6,4 @@ bin
 **/file/*
 **/Temp/*
 **/temp/*
+!**/.gitkeep
