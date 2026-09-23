@@ -10,7 +10,7 @@
 #include <unistd.h>
 
 void set_estado(int op) {
-  FILE *est = fopen("Producer_Consumer/Files/estado.txt", "r+");
+  FILE *est = fopen("Complex-Exercises/Producer_Consumer/Files/estado.txt", "r+");
   if (est == NULL) {
     printf("Error al abrir archivo\n");
     exit(0);
@@ -25,7 +25,7 @@ void set_estado(int op) {
 }
 
 void set_producto(int producto) {
-  FILE *vent = fopen("Producer_Consumer/Files/datos.txt", "w");
+  FILE *vent = fopen("Complex-Exercises/Producer_Consumer/Files/datos.txt", "w");
   if (vent == NULL) {
     printf("Error al abrir archivo\n");
     exit(0);
@@ -35,7 +35,7 @@ void set_producto(int producto) {
 }
 
 int get_estado() {
-  FILE *est = fopen("Producer_Consumer/Files/estado.txt", "r");
+  FILE *est = fopen("Complex-Exercises/Producer_Consumer/Files/estado.txt", "r");
   if (est == NULL) {
     printf("Error al abrir archivo\n");
     exit(0);
@@ -55,7 +55,7 @@ int get_estado() {
 }
 
 int get_producto() {
-  FILE *vent = fopen("Producer_Consumer/Files/datos.txt", "r");
+  FILE *vent = fopen("Complex-Exercises/Producer_Consumer/Files/datos.txt", "r");
   if (vent == NULL) {
     printf("Error al abrir archivo\n");
     exit(0);
@@ -90,8 +90,8 @@ int vaciar_buffer(int buffer[], int *ap, int tam) {
 }
 
 int main() {
-  FILE *dat = fopen("Producer_Consumer/Files/datos.txt", "w"),
-       *est = fopen("Producer_Consumer/Files/estado.txt", "w");
+  FILE *dat = fopen("Complex-Exercises/Producer_Consumer/Files/datos.txt", "w"),
+       *est = fopen("Complex-Exercises/Producer_Consumer/Files/estado.txt", "w");
   int tam;
 
   if (dat == NULL || est == NULL) {
@@ -115,18 +115,19 @@ int main() {
 
   if (pid > 0) { // Productor
 
-    int ap = 0, prod = 0, buffer[tam];
+    int ap = 0, producto, total = 0, buffer[tam];
     while (1) {
-
+      
       if (ap == tam) {
         ap = 0;
         sleep(1); 
-        printf("El productor produjo: %d productos\n", prod);
+        printf("El productor produjo: %d productos\n", total);
         fflush(stdout);
         while (vaciar_buffer(buffer, &ap, tam) == 0);
       }
 
-      buffer[ap++] = prod++;
+      buffer[ap++] = producto = 100000 + rand() % (999999 - 100000 + 1);
+      total++;
     }
 
   } else { // Consumidor
