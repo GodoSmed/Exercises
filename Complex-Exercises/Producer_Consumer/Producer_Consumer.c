@@ -10,7 +10,8 @@
 #include <unistd.h>
 
 void set_estado(int op) {
-  FILE *est = fopen("Complex-Exercises/Producer_Consumer/Files/estado.txt", "r+");
+  FILE *est =
+      fopen("Complex-Exercises/Producer_Consumer/Files/estado.txt", "r+");
   if (est == NULL) {
     printf("Error al abrir archivo\n");
     exit(0);
@@ -20,12 +21,13 @@ void set_estado(int op) {
     fprintf(est, "0"); // 0 sincronización (C)
   } else {
     fprintf(est, "1"); // 1 sincronización (P)
-  } 
+  }
   fclose(est);
 }
 
 void set_producto(int producto) {
-  FILE *vent = fopen("Complex-Exercises/Producer_Consumer/Files/datos.txt", "w");
+  FILE *vent =
+      fopen("Complex-Exercises/Producer_Consumer/Files/datos.txt", "w");
   if (vent == NULL) {
     printf("Error al abrir archivo\n");
     exit(0);
@@ -35,7 +37,8 @@ void set_producto(int producto) {
 }
 
 int get_estado() {
-  FILE *est = fopen("Complex-Exercises/Producer_Consumer/Files/estado.txt", "r");
+  FILE *est =
+      fopen("Complex-Exercises/Producer_Consumer/Files/estado.txt", "r");
   if (est == NULL) {
     printf("Error al abrir archivo\n");
     exit(0);
@@ -48,19 +51,20 @@ int get_estado() {
     } else if (num == 1) {
       fclose(est);
       return 1;
-    } 
+    }
   }
   fclose(est);
   return -1;
 }
 
 int get_producto() {
-  FILE *vent = fopen("Complex-Exercises/Producer_Consumer/Files/datos.txt", "r");
+  FILE *vent =
+      fopen("Complex-Exercises/Producer_Consumer/Files/datos.txt", "r");
   if (vent == NULL) {
     printf("Error al abrir archivo\n");
     exit(0);
   }
-  
+
   int num;
 
   if (fscanf(vent, "%d", &num) == 1) {
@@ -79,7 +83,7 @@ int vaciar_buffer(int buffer[], int *ap, int tam) {
 
   set_producto(buffer[(*ap)++]);
 
-  if (*ap == tam) { 
+  if (*ap == tam) {
     *ap = 0;
     set_estado(1);
     return 1;
@@ -91,7 +95,8 @@ int vaciar_buffer(int buffer[], int *ap, int tam) {
 
 int main() {
   FILE *dat = fopen("Complex-Exercises/Producer_Consumer/Files/datos.txt", "w"),
-       *est = fopen("Complex-Exercises/Producer_Consumer/Files/estado.txt", "w");
+       *est =
+           fopen("Complex-Exercises/Producer_Consumer/Files/estado.txt", "w");
   int tam;
 
   if (dat == NULL || est == NULL) {
@@ -117,13 +122,14 @@ int main() {
 
     int ap = 0, producto, total = 0, buffer[tam];
     while (1) {
-      
+
       if (ap == tam) {
         ap = 0;
-        sleep(1); 
+        sleep(1);
         printf("El productor produjo: %d productos\n", total);
         fflush(stdout);
-        while (vaciar_buffer(buffer, &ap, tam) == 0);
+        while (vaciar_buffer(buffer, &ap, tam) == 0)
+          ;
       }
 
       buffer[ap++] = producto = 100000 + rand() % (999999 - 100000 + 1);
@@ -132,7 +138,7 @@ int main() {
 
   } else { // Consumidor
 
-    int compras = 0, ap = 0, *buffer = malloc((tam * 10000) * sizeof(int));
+    int compras = 0, ap = 0, buffer[tam];
     while (1) {
 
       while (get_estado() == -1 || get_estado() == 0) { // Sincronización
@@ -143,12 +149,12 @@ int main() {
       compras++;
 
       if (compras % tam == 0) {
-        if (ap == (tam * 10000)) {
+        if (ap == tam) {
           ap = 0;
         }
         printf("El consumidor compro: %d productos\n", compras);
         fflush(stdout);
-      } 
+      }
 
       set_estado(0);
     }
