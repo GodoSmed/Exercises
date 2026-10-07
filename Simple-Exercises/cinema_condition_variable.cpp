@@ -35,7 +35,7 @@ public:
 // Variables Globales
 std::array<std::array<asiento, 10>, 8> asientos; // Matriz 8x10
 std::mutex mtx;
-std::condition_variable cv; 
+std::condition_variable cv; // Variable de condición
 bool impreso, encontrado;
 
 void asignar_asiento(int fila, int columna, std::string nombre,
@@ -74,7 +74,7 @@ void buscar_usuario(int m1, int m2, std::string nombre) {
 
         std::lock_guard<std::mutex> lock(mtx);
         encontrado = true;
-        
+
         std::cout << "Asiento encontrado" << std::endl;
         std::cout << "Ocupado por: " << asientos[i][j].get_nombre()
                   << std::endl;
@@ -199,7 +199,7 @@ int main() {
       t4.join();
 
       if (!encontrado) {
-       std::cout << "Asiento no encontrado!" << std::endl; 
+        std::cout << "Asiento no encontrado!" << std::endl;
       }
 
       break;
