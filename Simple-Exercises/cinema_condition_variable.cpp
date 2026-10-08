@@ -101,17 +101,14 @@ public:
     std::cout << std::endl;
     std::cout << "\t <======== SALA DE CINE ========>" << std::endl;
 
-    {
-      std::unique_lock<std::mutex> lock(mtx);
-      for (int i = 0; i < 8; i++) {
-        for (int j = 0; j < 10; j++) {
-          asientos[i][j].get_ocupado() ? std::cout << " [1] "
-                                       : std::cout << " [0] ";
-        }
-        std::cout << std::endl;
+    for (int i = 0; i < 8; i++) {
+      for (int j = 0; j < 10; j++) {
+        asientos[i][j].get_ocupado() ? std::cout << " [1] "
+                                     : std::cout << " [0] ";
       }
-      this->impreso = true;
+      std::cout << std::endl;
     }
+    this->impreso = true;
 
     cv.notify_one();
   }
@@ -119,12 +116,9 @@ public:
   void num_asientos_libres_ocupados() {
     int libres = 0, ocupados = 0;
 
-    {
-      std::unique_lock<std::mutex> lock(mtx);
-      for (int i = 0; i < 8; i++) {
-        for (int j = 0; j < 10; j++) {
-          asientos[i][j].get_ocupado() ? ocupados++ : libres++;
-        }
+    for (int i = 0; i < 8; i++) {
+      for (int j = 0; j < 10; j++) {
+        asientos[i][j].get_ocupado() ? ocupados++ : libres++;
       }
     }
 
@@ -200,7 +194,7 @@ int main() {
 
     case '3': {
       std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-      c.set_encontrado( false);
+      c.set_encontrado(false);
       c.set_hilos_c(0);
 
       std::cout << "Nombre: ";
@@ -216,7 +210,9 @@ int main() {
 
       {
         std::unique_lock<std::mutex> lock(c.mtx);
-        c.cv.wait(lock, [&c]() { return c.get_encontrado() || c.get_hilos_c() == 4; });
+        c.cv.wait(lock, [&c]() {
+          return c.get_encontrado() || c.get_hilos_c() == 4;
+        });
       }
 
       if (!c.get_encontrado()) {
