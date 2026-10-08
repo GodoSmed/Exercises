@@ -108,7 +108,11 @@ public:
       }
       std::cout << std::endl;
     }
-    this->impreso = true;
+
+    {
+      std::unique_lock<std::mutex> lock(mtx);
+      this->impreso = true;
+    }
 
     cv.notify_one();
   }
