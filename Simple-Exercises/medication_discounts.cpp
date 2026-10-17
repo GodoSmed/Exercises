@@ -27,8 +27,6 @@ public:
   }
 
 public:
-  void add_producto(std::string a) { productos.push_back(a); }
-
   void mostrar_catalogo() {
     std::cout << "\nID Producto\t\t\tCategoría\t\tPrecio" << std::endl;
     for (int i = 0; i < productos.size(); i++) {
@@ -57,6 +55,8 @@ public:
 
     std::cout << std::endl;
   }
+
+  void agregar_producto(std::string a) { productos.push_back(a); }
 
   void agregar_producto() {
     std::string sel;
@@ -200,26 +200,26 @@ int main() {
   char op;
   farmacia farmacia;
 
-  farmacia.add_producto("Paracetamol 500mg\t\tAnalgésico\t\t$34");
-  farmacia.add_producto("Ibuprofeno 400mg\t\tAntiinflamatorio\t$95");
-  farmacia.add_producto("Omeprazol 20mg\t\tAntiácido\t\t$128");
-  farmacia.add_producto("Loratadina 10mg\t\tAntihistamínico\t\t$58");
-  farmacia.add_producto("Amoxicilina 500mg\t\tAntibiótico\t\t$149");
-  farmacia.add_producto("Alcohol Etílico 70°\t\tAntiséptico\t\t$70");
-  farmacia.add_producto("Gasa Estéril\t\t\tMaterial Quirúrgico\t$36");
-  farmacia.add_producto("Termómetro Digital\t\tDispositivo Médico\t$122");
-  farmacia.add_producto("Vitamina C 1000mg\t\tSuplemento\t\t$94");
-  farmacia.add_producto("Jarabe para la Tos\t\tRespiratorio\t\t$79");
-  farmacia.add_producto("Crema Hipoalergénica\tDermatología\t\t$128");
-  farmacia.add_producto("Bloqueador Solar\t\tCuidado Personal\t$318");
-  farmacia.add_producto("Gotas Oftálmicas\t\tOftalmología\t\t$86");
-  farmacia.add_producto("Suero Oral\t\t\tHidratación\t\t$36");
-  farmacia.add_producto("Curas Adhesivas\t\tPrimeros Auxilios\t$41");
-  farmacia.add_producto("Jabón Neutro\t\tHigiene\t\t\t$31");
-  farmacia.add_producto("Gel Antibacterial\t\tHigiene\t\t\t$50");
-  farmacia.add_producto("Oxímetro de Pulso\t\tDispositivo Médico\t$115");
-  farmacia.add_producto("Mascarillas\t\t\tProtección\t\t$65");
-  farmacia.add_producto("Cepillo Dental Suave\tHigiene Oral\t\t$36");
+  farmacia.agregar_producto("Paracetamol 500mg\t\tAnalgésico\t\t$34");
+  farmacia.agregar_producto("Ibuprofeno 400mg\t\tAntiinflamatorio\t$95");
+  farmacia.agregar_producto("Omeprazol 20mg\t\tAntiácido\t\t$128");
+  farmacia.agregar_producto("Loratadina 10mg\t\tAntihistamínico\t\t$58");
+  farmacia.agregar_producto("Amoxicilina 500mg\t\tAntibiótico\t\t$149");
+  farmacia.agregar_producto("Alcohol Etílico 70°\t\tAntiséptico\t\t$70");
+  farmacia.agregar_producto("Gasa Estéril\t\t\tMaterial Quirúrgico\t$36");
+  farmacia.agregar_producto("Termómetro Digital\t\tDispositivo Médico\t$122");
+  farmacia.agregar_producto("Vitamina C 1000mg\t\tSuplemento\t\t$94");
+  farmacia.agregar_producto("Jarabe para la Tos\t\tRespiratorio\t\t$79");
+  farmacia.agregar_producto("Crema Hipoalergénica\tDermatología\t\t$128");
+  farmacia.agregar_producto("Bloqueador Solar\t\tCuidado Personal\t$318");
+  farmacia.agregar_producto("Gotas Oftálmicas\t\tOftalmología\t\t$86");
+  farmacia.agregar_producto("Suero Oral\t\t\tHidratación\t\t$36");
+  farmacia.agregar_producto("Curas Adhesivas\t\tPrimeros Auxilios\t$41");
+  farmacia.agregar_producto("Jabón Neutro\t\tHigiene\t\t\t$31");
+  farmacia.agregar_producto("Gel Antibacterial\t\tHigiene\t\t\t$50");
+  farmacia.agregar_producto("Oxímetro de Pulso\t\tDispositivo Médico\t$115");
+  farmacia.agregar_producto("Mascarillas\t\t\tProtección\t\t$65");
+  farmacia.agregar_producto("Cepillo Dental Suave\tHigiene Oral\t\t$36");
 
   while (1) {
     std::cout << "Seleccione una opción" << std::endl;
