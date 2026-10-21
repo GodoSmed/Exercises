@@ -101,20 +101,29 @@ int main() {
   ordenador.add_palabra("Misterio");
   ordenador.add_palabra("Espiral");
 
-  int tam = ordenador.get_tam() / 4;
-  std::thread t1(&orden_lg::ordenar_cadenas, &ordenador, 0, tam);
-  std::thread t2(&orden_lg::ordenar_cadenas, &ordenador, tam, tam * 2);
-  std::thread t3(&orden_lg::ordenar_cadenas, &ordenador, tam * 2, tam * 3);
-  std::thread t4(&orden_lg::ordenar_cadenas, &ordenador, tam * 3,
-                 ordenador.get_tam());
+  if (ordenador.get_tam() > 4) {
+    int tam = ordenador.get_tam() / 4;
+    std::thread t1(&orden_lg::ordenar_cadenas, &ordenador, 0, tam);
+    std::thread t2(&orden_lg::ordenar_cadenas, &ordenador, tam, tam * 2);
+    std::thread t3(&orden_lg::ordenar_cadenas, &ordenador, tam * 2, tam * 3);
+    std::thread t4(&orden_lg::ordenar_cadenas, &ordenador, tam * 3,
+                   ordenador.get_tam());
 
-  t1.join();
-  t2.join();
-  t3.join();
-  t4.join();
+    t1.join();
+    t2.join();
+    t3.join();
+    t4.join();
 
-  ordenador.ordenar_cadenas(0, 50);
-  ordenador.imprimir_arreglo();
+    ordenador.ordenar_cadenas(0, ordenador.get_tam());
+    ordenador.imprimir_arreglo();
+  } else if (ordenador.get_tam() > 1) {
+    int tam = ordenador.get_tam() / 2;
+    std::thread t1(&orden_lg::ordenar_cadenas, &ordenador, 0, tam);
+    std::thread t2(&orden_lg::ordenar_cadenas, &ordenador, tam,
+                   ordenador.get_tam());
+  } else {
+    std::cout << "No hay suficientes elementos" << std::endl;
+  }
 
   return 0;
 }

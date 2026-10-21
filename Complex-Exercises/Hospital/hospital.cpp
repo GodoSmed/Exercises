@@ -6,6 +6,11 @@ vacunas próximas. a realizarse.
 
 8. Mostrar en orden alfabético los nombres de todos los pacientes
 13. Mostrar el número de determinada vacuna próxima a aplicarse (siguiente mes)
+
+Agregar hilos para la carga y procesamiento de cada linea del archivo
+Agregar hilo para después de cargar  algunos pacientes de varias lineas del archivo
+verificar si una de sus vacunas esta proxima a aplicarse el siguiente mes y usar 
+un contador para cada vacuna (verificar que no se repitan) 
 */
 
 #include <cctype>

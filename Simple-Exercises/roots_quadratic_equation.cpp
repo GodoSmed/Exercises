@@ -1,6 +1,7 @@
 /*
 Determinar las raíces reales de una ecuación cuadrática mediante la fórmula
 general. (Hilos ya implementados)
+Agregar hilos para comprobar los posibles errores 
 */
 
 #include <cmath>
