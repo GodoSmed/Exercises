@@ -3,7 +3,6 @@ Determinar el conjunto intersección entre dos conjuntos de cadenas.
 */
 
 #include <iostream>
-#include <mutex>
 #include <ostream>
 #include <string>
 #include <thread>
