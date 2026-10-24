@@ -7,12 +7,12 @@ vacunas próximas. a realizarse.
 8. Mostrar en orden alfabético los nombres de todos los pacientes
 13. Mostrar el número de determinada vacuna próxima a aplicarse (siguiente mes)
 
-Agregar hilos para la carga y procesamiento de cada linea del archivo
-Agregar hilo para después de cargar  algunos pacientes de varias lineas del archivo
-verificar si una de sus vacunas esta proxima a aplicarse el siguiente mes y usar 
-un contador para cada vacuna (verificar que no se repitan) 
+Agregar hilos para la carga y procesamiento de cada linea del archivo [x]
+Agregar un hilo que a la vez que se procesan las lineas se 
+  cuenten las vacunas para el siguiente mes []
 */
 
+#include <algorithm>
 #include <cctype>
 #include <cstdio>
 #include <fstream>
@@ -24,34 +24,6 @@ un contador para cada vacuna (verificar que no se repitan)
 #include <string>
 #include <thread>
 #include <vector>
-
-class ordenador {
-private:
-  std::vector<std::string> arr;
-
-public:
-  void ordenar_cadenas(int m1, int m2) {
-    std::string min;
-    int min_i;
-    for (int i = m1; i < m2 - 1; i++) {
-      min = "~";
-      for (int j = i + 1; j < m2; j++) {
-        if (min > arr[j]) {
-          min = arr[j];
-          min_i = j;
-        }
-      }
-      if (min_i != i) {
-        arr[min_i] = arr[i];
-        arr[i] = min;
-      }
-    }
-  }
-
-  void add_palabra(std::string a) { arr.push_back(a); }
-
-  std::vector<std::string> get_arreglo() { return arr; }
-};
 
 class vacuna {
 private:
@@ -95,6 +67,7 @@ public:
 class hospital {
 private:
   std::vector<paciente> pacientes;
+  std::vector<std::string> lineas, nombres;
   std::ifstream datos_pacientes;
   std::string ruta;
   std::mutex mtx;
@@ -113,15 +86,12 @@ public:
     this->contador_vac = 0;
   }
 
-  void cargar_datos_pacientes() {
-    datos_pacientes.open(ruta);
-    if (!datos_pacientes.is_open()) {
-      throw std::runtime_error("Error al abrir archivo");
-    }
-    std::string linea, bloque, dato, temp, dia, mes, año;
-    std::stringstream ss_linea, ss_bloque, ss_fecha;
-    while (std::getline(datos_pacientes, linea)) {
+  void procesar_datos_pacientes(int m1, int m2) {
+    for (int i = m1; i < m2; i++) {
+      std::string bloque, dato, temp, dia, mes, año, linea = lineas[i];
+      std::stringstream ss_linea, ss_bloque, ss_fecha;
       paciente p;
+
       ss_linea.clear();
       ss_linea.str(linea);
       std::getline(ss_linea, bloque, ';'); // bloque del nombre completo
@@ -172,27 +142,68 @@ public:
           p.registrar_vacuna_pend(temp, stoi(dia), stoi(mes), stoi(año));
         }
       }
-      pacientes.push_back(p);
+      {
+        std::lock_guard<std::mutex> lock(mtx);
+        pacientes.push_back(p);
+      }
     }
+  }
+
+  void cargar_datos_pacientes() {
+    datos_pacientes.open(ruta);
+    if (!datos_pacientes.is_open()) {
+      throw std::runtime_error("Error al abrir archivo");
+    }
+    std::string linea;
+    int cont = 0;
+    while (std::getline(datos_pacientes, linea)) {
+      lineas.push_back(linea);
+    }
+
+    if (lineas.size() < 4 && lineas.size() > 1) {
+      int tam = lineas.size() / 2;
+      std::thread t1(&hospital::procesar_datos_pacientes, this, 0, tam);
+      std::thread t2(&hospital::procesar_datos_pacientes, this, tam,
+                     lineas.size());
+
+      t1.join();
+      t2.join();
+    } else {
+      int tam = lineas.size() / 4;
+      std::thread t1(&hospital::procesar_datos_pacientes, this, 0, tam);
+      std::thread t2(&hospital::procesar_datos_pacientes, this, tam, tam * 2);
+      std::thread t3(&hospital::procesar_datos_pacientes, this, tam * 2,
+                     tam * 3);
+      std::thread t4(&hospital::procesar_datos_pacientes, this, tam * 3,
+                     lineas.size());
+
+      t1.join();
+      t2.join();
+      t3.join();
+      t4.join();
+    }
+    lineas.clear();
+    lineas.shrink_to_fit();
     datos_pacientes.close();
   }
 
+  void ordenar_cadenas(int m1, int m2) {
+    std::sort(nombres.begin() + m1, nombres.begin() + m2);
+  }
+
   void mostrar_orden_alfabético() {
-    std::vector<std::string> arr_ordenado;
-    ordenador ord;
     int tam;
 
     for (paciente &p : pacientes) {
-      ord.add_palabra(p.get_nombre());
+      nombres.push_back(p.get_nombre());
     }
 
     tam = pacientes.size() / 4;
     // COBEGIN
-    std::thread t1(&ordenador::ordenar_cadenas, &ord, 0, tam);
-    std::thread t2(&ordenador::ordenar_cadenas, &ord, tam, tam * 2);
-    std::thread t3(&ordenador::ordenar_cadenas, &ord, tam * 2, tam * 3);
-    std::thread t4(&ordenador::ordenar_cadenas, &ord, tam * 3,
-                   pacientes.size());
+    std::thread t1(&hospital::ordenar_cadenas, this, 0, tam);
+    std::thread t2(&hospital::ordenar_cadenas, this, tam, tam * 2);
+    std::thread t3(&hospital::ordenar_cadenas, this, tam * 2, tam * 3);
+    std::thread t4(&hospital::ordenar_cadenas, this, tam * 3, pacientes.size());
     // COEND
 
     t1.join();
@@ -200,26 +211,23 @@ public:
     t3.join();
     t4.join();
 
-    ord.ordenar_cadenas(0, pacientes.size());
-    arr_ordenado = ord.get_arreglo();
-
     std::cout << "Orden Alfabético de los Pacientes" << std::endl;
-    for (int i = 0; i < arr_ordenado.size(); i++) {
-      std::cout << arr_ordenado[i] << std::endl;
+    for (int i = 0; i < nombres.size(); i++) {
+      std::cout << nombres[i] << std::endl;
     }
   }
 
   std::string a_min(std::string texto) {
     std::string temp = "";
-    for(int i = 0; i < texto.size(); i++){
-        temp += tolower(texto[i]);
+    for (int i = 0; i < texto.size(); i++) {
+      temp += tolower(texto[i]);
     }
     return temp;
   }
 
-  std::string trim(std::string texto) { 
+  std::string trim(std::string texto) {
     std::string temp = "";
-    for(int i = 0; i < texto.size(); i++){
+    for (int i = 0; i < texto.size(); i++) {
       if (texto[i] != ' ') {
         temp += texto[i];
       }
