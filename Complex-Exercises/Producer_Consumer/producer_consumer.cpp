@@ -1,5 +1,6 @@
 
 #include <fstream>
+#include <iostream>
 #include <ostream>
 #include <semaphore.h>
 #include <string>
@@ -17,39 +18,47 @@ int ap_r = 0, ap_e = 0;
 sem_t vacios;
 sem_t llenos;
 
+void producir(int producto){
+  producido.push_back(producto);
+  archivo_p << producido[producto] << std::endl;
+}
+
+void coloca(int *producto){
+  std::cout << "Produciendo" << std::endl;
+  almacén[ap_e] = producido[(*producto)++];
+  ap_e = ++ap_e % 8;
+}
+
 void productor() {
   int ap = 0;
   while (1) {
-    if (ap == 10000000)
-      return;
-
-    if (ap % 100 == 0)
-      archivo_p << std::endl;
-
-    producido.push_back(ap);
-    archivo_p << producido[ap] << ", ";
+    producir(ap);
     sem_wait(&vacios);
-    almacén[ap_e] = producido[ap++];
-    ap_e = ++ap_e % 8;
+    coloca(&ap);
     sem_post(&llenos);
+    sleep(1);
   }
+}
+
+void tomar(int producto){
+  consumo.push_back(producto); 
+}
+
+void consumir(int *ap) {
+  std::cout << "Consumiendo" << std::endl;
+  almacén[ap_r] = -1; 
+  archivo_c << consumo[(*ap)++] << std::endl;
+  ap_r = ++ap_r % 8;
 }
 
 void consumidor() {
   int ap = 0;
   while (1) {
-    if (ap == 10000000)
-      return;
-
-    if (ap % 100 == 0)
-      archivo_c << std::endl;
-
     sem_wait(&llenos);
-    consumo.push_back(almacén[ap_r]); // Tomar
-    archivo_c << consumo[ap++] << ", ";
-    almacén[ap_r] = -1; // Consumir
-    ap_r = ++ap_r % 8;
+    tomar(almacén[ap_r]);
+    consumir(&ap);
     sem_post(&vacios);
+    sleep(1);
   }
 }
 
