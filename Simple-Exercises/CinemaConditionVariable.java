@@ -3,6 +3,8 @@ import java.util.Scanner;
 public class CinemaConditionVariable {
   private Scanner entrada;
   private Asiento[][] asientos;
+  private static final Object Monitor = new Object();
+  private static boolean varCon = false;
 
   public CinemaConditionVariable(Scanner entrada) {
     this.asientos = new Asiento[8][10];
@@ -145,7 +147,7 @@ public class CinemaConditionVariable {
   }
 
   public void mostrarDatosSala() {
-    exclusionMutua.varCon = false;
+    varCon = false;
     Thread hiloOcupados = new Thread(new AsientosOcupados());
     Thread hiloMostrar = new Thread(new MostrarSala());
 
@@ -194,11 +196,6 @@ public class CinemaConditionVariable {
     }
   }
 
-  public class exclusionMutua {
-    public static final Object Monitor = new Object();
-    public static boolean varCon = false;
-  }
-
   class MostrarSala implements Runnable {
     @Override
     public void run() {
@@ -216,9 +213,9 @@ public class CinemaConditionVariable {
       }
       System.out.println();
 
-      synchronized (exclusionMutua.Monitor) {
-        exclusionMutua.varCon = true;
-        exclusionMutua.Monitor.notifyAll();
+      synchronized (Monitor) {
+        varCon = true;
+        Monitor.notifyAll();
       }
     }
   }
@@ -237,10 +234,10 @@ public class CinemaConditionVariable {
         }
       }
 
-      synchronized (exclusionMutua.Monitor) {
-        while (!exclusionMutua.varCon) {
+      synchronized (Monitor) {
+        while (!varCon) {
           try {
-            exclusionMutua.Monitor.wait();
+            Monitor.wait();
           } catch (Exception e) {
             System.err.println(e.getMessage());
           }
