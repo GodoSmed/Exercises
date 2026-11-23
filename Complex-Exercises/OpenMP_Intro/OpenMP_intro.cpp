@@ -24,7 +24,6 @@ Compilar: g++ -fopenmp
 #include <limits>
 #include <omp.h>
 #include <ostream>
-#include <sstream>
 #include <string>
 #include <unordered_set>
 #include <vector>
