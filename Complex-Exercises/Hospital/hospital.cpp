@@ -160,6 +160,8 @@ public:
       lineas.push_back(linea);
     }
 
+    datos_pacientes.close();
+
     if (lineas.size() < 4 && lineas.size() > 1) {
       int tam = lineas.size() / 2;
       std::thread t1(&hospital::procesar_datos_pacientes, this, 0, tam);
@@ -183,8 +185,7 @@ public:
       t4.join();
     }
     lineas.clear();
-    lineas.shrink_to_fit();
-    datos_pacientes.close();
+    lineas.shrink_to_fit(); 
   }
 
   void ordenar_cadenas(int m1, int m2) {
