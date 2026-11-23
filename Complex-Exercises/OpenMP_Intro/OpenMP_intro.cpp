@@ -42,7 +42,7 @@ void ejercicio_01() {
   cin.ignore();
   getline(cin, cadena);
 
-#pragma omp parallel for reduction(+ : contador)
+#pragma omp parallel for schedule(static) reduction(+ : contador)
   for (int i = 0; i < cadena.length(); i++) {
     if (cadena[i] == ' ') {
       contador++;
@@ -57,8 +57,7 @@ void ejercicio_01() {
 void ejercicio_02() {
   string ruta = "Complex-Exercises/OpenMP_Intro/Files/words-02.txt";
   vector<string> lineas;
-  stringstream ss_linea;
-  string linea;
+  string l;
   int contPal = 0;
   int contChar = 0;
 
@@ -68,14 +67,17 @@ void ejercicio_02() {
     return;
   }
 
-  while (std::getline(archivo, linea)) {
-    lineas.push_back(linea);
+  while (std::getline(archivo, l)) {
+    lineas.push_back(l);
   }
 
   archivo.close();
 
-#pragma omp parallel for reduction(+ : contChar) reduction(+ : contPal)
-  for (string linea : lineas) {
+#pragma omp parallel for schedule(static) reduction(+ : contChar)              \
+    reduction(+ : contPal)
+  for (int i = 0; i < lineas.size(); i++) {
+    string linea = lineas[i];
+
     if (linea.empty()) {
       continue;
     }
@@ -140,11 +142,8 @@ void ejercicio_04() {
 
   bool cadena_dif = false;
 
-#pragma omp parallel for
+#pragma omp parallel for schedule(static)
   for (int i = 0; i < cadena1.length(); i++) {
-    if (cadena_dif) {
-      continue;
-    }
 
     if (cadena1[i] != cadena2[i]) {
 #pragma omp critical
@@ -260,7 +259,7 @@ void ejercicio_07() {
   unordered_set<int> conjunto2 = {2, 8, 9, 0, 22, 19, 22, 77};
   unordered_set<int> conjuntoT;
 
-#pragma omp parallel for
+#pragma omp parallel for schedule(static)
   for (int i = 0; i < conjunto1.size(); i++) {
     int val = conjunto1[i];
     if (conjunto2.find(val) != conjunto2.end()) {
@@ -357,7 +356,7 @@ void ejercicio_09() {
   cin.ignore(numeric_limits<streamsize>::max(), '\n');
   getline(cin, palabra);
 
-  #pragma omp parallel for schedule(static) reduction(+ : contador)
+#pragma omp parallel for schedule(static) reduction(+ : contador)
   for (int i = 0; i < texto.size(); i++) {
     if (texto[i] == palabra[0]) {
       bool no_encontrado = false;
